@@ -1,11 +1,7 @@
-/**
- * Tests for the main App component.
- */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import App from './App'
 
-// Mock the API service
 vi.mock('./services/api', () => ({
   healthCheck: vi.fn(),
   default: {
@@ -100,7 +96,6 @@ describe('App', () => {
 
   describe('Authenticated state', () => {
     beforeEach(() => {
-      // Set up authenticated state in localStorage
       localStorage.setItem('token', 'test-token')
       localStorage.setItem('user', JSON.stringify({ id: 1, username: 'testuser' }))
     })
@@ -154,7 +149,7 @@ describe('App', () => {
       })
     })
 
-    it('shows authenticated content message', async () => {
+    it('shows link to todo list when authenticated', async () => {
       healthCheck.mockResolvedValue({
         status: 'healthy',
         components: {
@@ -166,7 +161,8 @@ describe('App', () => {
       render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText(/you are logged in/i)).toBeInTheDocument()
+        expect(screen.getByRole('link', { name: /view my to-do list/i })).toBeInTheDocument()
+        expect(screen.getByRole('link', { name: /view my to-do list/i })).toHaveAttribute('href', '/todos')
       })
     })
   })
