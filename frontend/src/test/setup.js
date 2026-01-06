@@ -1,0 +1,1 @@
+/**\n * Test setup file for Vitest.\n * Configures testing-library and other test utilities.\n */\nimport '@testing-library/jest-dom'\n

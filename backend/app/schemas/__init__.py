@@ -1,0 +1,1 @@
+"""\nPydantic schemas for request/response validation.\nSchemas define the structure of API inputs and outputs.\n"""\n

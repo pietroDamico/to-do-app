@@ -1,0 +1,1 @@
+"""\nPytest configuration and fixtures for testing.\n"""\nimport pytest\nfrom fastapi.testclient import TestClient\n\nfrom app.main import app\n\n\n@pytest.fixture\ndef client():\n    """\n    Test client fixture for making requests to the FastAPI app.\n    """\n    return TestClient(app)\n

@@ -1,0 +1,1 @@
+"""\nFastAPI routers for API endpoints.\nRouters are organized by feature/domain.\n"""\n
