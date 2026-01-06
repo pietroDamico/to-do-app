@@ -9,7 +9,8 @@ from sqlalchemy.exc import IntegrityError
 from app.database import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse
-from app.utils.security import hash_password
+from app.schemas.auth import LoginRequest, LoginResponse, LoginUserInfo
+from app.utils.security import hash_password, verify_password, create_access_token
 
 logger = logging.getLogger(__name__)
 
@@ -60,3 +61,55 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
             status_code=status.HTTP_409_CONFLICT,
             detail="Username already exists"
         )
+
+
+@router.post("/login", response_model=LoginResponse)
+def login(login_data: LoginRequest, db: Session = Depends(get_db)):
+    """
+    Authenticate a user and return a JWT access token.
+    
+    - **username**: The user's username (case-insensitive)
+    - **password**: The user's password
+    
+    Returns an access token and user information on success.
+    """
+    # Log login attempt (never log password)
+    logger.info(f"Login attempt for username: {login_data.username}")
+    
+    # Normalize username to lowercase for case-insensitive lookup
+    username = login_data.username.lower()
+    
+    # Look up user by username
+    user = db.query(User).filter(User.username == username).first()
+    
+    # Use generic error message to prevent username enumeration
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
+    # Check if user exists
+    if not user:
+        logger.warning(f"Login failed: username '{username}' not found")
+        raise credentials_exception
+    
+    # Verify password
+    if not verify_password(login_data.password, user.password_hash):
+        logger.warning(f"Login failed: invalid password for username '{username}'")
+        raise credentials_exception
+    
+    # Generate JWT token
+    token_data = {
+        "sub": str(user.id),
+        "username": user.username
+    }
+    access_token = create_access_token(data=token_data)
+    
+    logger.info(f"Login successful for user_id: {user.id}")
+    
+    return LoginResponse(
+        access_token=access_token,
+        token_type="bearer",
+        user=LoginUserInfo(id=user.id, username=user.username)
+    )
