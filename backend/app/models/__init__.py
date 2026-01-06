@@ -1,1 +1,7 @@
-"""\nSQLAlchemy database models.\nAll models inherit from Base defined in database.py.\n"""\n
+"""
+SQLAlchemy database models.
+All models inherit from Base defined in database.py.
+"""
+from app.models.user import User
+
+__all__ = ["User"]
