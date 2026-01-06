@@ -1,5 +1,5 @@
 """
-Authentication router for user registration and login endpoints.
+Authentication router for user registration, login, and user info endpoints.
 """
 import logging
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -11,6 +11,7 @@ from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse
 from app.schemas.auth import LoginRequest, LoginResponse, LoginUserInfo
 from app.utils.security import hash_password, verify_password, create_access_token
+from app.utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
 
@@ -113,3 +114,16 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
         token_type="bearer",
         user=LoginUserInfo(id=user.id, username=user.username)
     )
+
+
+@router.get("/me", response_model=UserResponse)
+async def get_current_user_info(current_user: User = Depends(get_current_user)):
+    """
+    Get the current authenticated user's information.
+    
+    Requires a valid JWT token in the Authorization header.
+    
+    Returns the authenticated user's data (without password).
+    """
+    logger.info(f"User info requested for user_id: {current_user.id}")
+    return current_user
