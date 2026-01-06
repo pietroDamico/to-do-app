@@ -1,1 +1,80 @@
-/**\n * Tests for the main App component.\n */\nimport { describe, it, expect, vi, beforeEach } from 'vitest'\nimport { render, screen, waitFor } from '@testing-library/react'\nimport App from './App'\n\n// Mock the API service\nvi.mock('./services/api', () => ({\n  healthCheck: vi.fn(),\n}))\n\nimport { healthCheck } from './services/api'\n\ndescribe('App', () => {\n  beforeEach(() => {\n    vi.clearAllMocks()\n  })\n\n  it('renders the app title', async () => {\n    healthCheck.mockResolvedValue({\n      status: 'healthy',\n      components: {\n        api: { status: 'healthy' },\n        database: { status: 'healthy' },\n      },\n    })\n\n    render(<App />)\n    expect(screen.getByText('To-Do App')).toBeInTheDocument()\n  })\n\n  it('displays API status from health check', async () => {\n    healthCheck.mockResolvedValue({\n      status: 'healthy',\n      components: {\n        api: { status: 'healthy' },\n        database: { status: 'healthy' },\n      },\n    })\n\n    render(<App />)\n\n    await waitFor(() => {\n      // Check that both status elements exist\n      const healthyElements = screen.getAllByText('healthy')\n      expect(healthyElements).toHaveLength(2)\n    })\n  })\n\n  it('displays error status when health check fails', async () => {\n    healthCheck.mockRejectedValue(new Error('Connection failed'))\n\n    render(<App />)\n\n    await waitFor(() => {\n      // Check that both status elements show error\n      const errorElements = screen.getAllByText('error')\n      expect(errorElements).toHaveLength(2)\n    })\n  })\n})\n
+/**
+ * Tests for the main App component.
+ */
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
+import App from './App'
+
+// Mock the API service
+vi.mock('./services/api', () => ({
+  healthCheck: vi.fn(),
+  default: {
+    post: vi.fn(),
+  },
+}))
+
+import { healthCheck } from './services/api'
+
+describe('App', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('renders the app title on home page', async () => {
+    healthCheck.mockResolvedValue({
+      status: 'healthy',
+      components: {
+        api: { status: 'healthy' },
+        database: { status: 'healthy' },
+      },
+    })
+
+    render(<App />)
+    expect(screen.getByText('To-Do App')).toBeInTheDocument()
+  })
+
+  it('displays API status from health check', async () => {
+    healthCheck.mockResolvedValue({
+      status: 'healthy',
+      components: {
+        api: { status: 'healthy' },
+        database: { status: 'healthy' },
+      },
+    })
+
+    render(<App />)
+
+    await waitFor(() => {
+      // Check that both status elements exist
+      const healthyElements = screen.getAllByText('healthy')
+      expect(healthyElements).toHaveLength(2)
+    })
+  })
+
+  it('displays error status when health check fails', async () => {
+    healthCheck.mockRejectedValue(new Error('Connection failed'))
+
+    render(<App />)
+
+    await waitFor(() => {
+      // Check that both status elements show error
+      const errorElements = screen.getAllByText('error')
+      expect(errorElements).toHaveLength(2)
+    })
+  })
+
+  it('has links to register and login pages', async () => {
+    healthCheck.mockResolvedValue({
+      status: 'healthy',
+      components: {
+        api: { status: 'healthy' },
+        database: { status: 'healthy' },
+      },
+    })
+
+    render(<App />)
+
+    expect(screen.getByRole('link', { name: /register/i })).toHaveAttribute('href', '/register')
+    expect(screen.getByRole('link', { name: /login/i })).toHaveAttribute('href', '/login')
+  })
+})
