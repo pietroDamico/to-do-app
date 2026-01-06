@@ -1,17 +1,1 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-
-function App() {
-  return (
-    <BrowserRouter>
-      <div className="App">
-        <h1>To-Do App</h1>
-        <p>Frontend skeleton - to be implemented by LL agents</p>
-        <Routes>
-          <Route path="/" element={<div>Home</div>} />
-        </Routes>
-      </div>
-    </BrowserRouter>
-  )
-}
-
-export default App
+import { useState, useEffect } from 'react'\nimport { BrowserRouter, Routes, Route } from 'react-router-dom'\nimport { healthCheck } from './services/api'\nimport './App.css'\n\nfunction App() {\n  const [apiStatus, setApiStatus] = useState('checking...')\n  const [dbStatus, setDbStatus] = useState('checking...')\n\n  useEffect(() => {\n    const checkHealth = async () => {\n      try {\n        const health = await healthCheck()\n        setApiStatus(health.components?.api?.status || health.status || 'unknown')\n        setDbStatus(health.components?.database?.status || 'unknown')\n      } catch (error) {\n        console.error('Health check failed:', error)\n        setApiStatus('error')\n        setDbStatus('error')\n      }\n    }\n    \n    checkHealth()\n  }, [])\n\n  return (\n    <BrowserRouter>\n      <div className=\"App\">\n        <h1>To-Do App</h1>\n        <div className=\"status-container\">\n          <p>API Status: <span className={`status-${apiStatus}`}>{apiStatus}</span></p>\n          <p>Database Status: <span className={`status-${dbStatus}`}>{dbStatus}</span></p>\n        </div>\n        <Routes>\n          <Route path=\"/\" element={<div>Welcome to To-Do App</div>} />\n        </Routes>\n      </div>\n    </BrowserRouter>\n  )\n}\n\nexport default App\n
