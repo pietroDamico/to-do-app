@@ -104,6 +104,24 @@ h1 {
   margin: 0;
 }
 
+.todos-link {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: #28a745;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.todos-link:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 .dashboard-content {
   margin-top: 2rem;
   padding: 2rem;
@@ -148,7 +166,6 @@ h1 {
   100% { transform: rotate(360deg); }
 }
 
-/* Responsive adjustments */
 @media (max-width: 600px) {
   .app-header {
     flex-direction: column;
