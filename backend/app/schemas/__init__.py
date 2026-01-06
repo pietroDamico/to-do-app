@@ -1,1 +1,7 @@
-"""\nPydantic schemas for request/response validation.\nSchemas define the structure of API inputs and outputs.\n"""\nfrom app.schemas.user import UserCreate, UserResponse, UserInDB\n\n__all__ = ["UserCreate", "UserResponse", "UserInDB"]\n
+"""
+Pydantic schemas for request/response validation.
+Schemas define the structure of API inputs and outputs.
+"""
+from app.schemas.user import UserCreate, UserResponse, UserInDB
+
+__all__ = ["UserCreate", "UserResponse", "UserInDB"]

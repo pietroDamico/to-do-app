@@ -1,1 +1,52 @@
-"""\nTests for health check endpoints.\n"""\nimport pytest\n\n\ndef test_root_endpoint(client):\n    """Test the root endpoint returns API status."""\n    response = client.get("/")\n    assert response.status_code == 200\n    data = response.json()\n    assert data["status"] == "ok"\n    assert "message" in data\n    assert "version" in data\n\n\ndef test_health_endpoint_returns_200(client):\n    """Test the health endpoint returns 200 status code."""\n    response = client.get("/health")\n    assert response.status_code == 200\n\n\ndef test_health_endpoint_structure(client):\n    """Test the health endpoint returns expected structure."""\n    response = client.get("/health")\n    data = response.json()\n    \n    # Check overall status exists\n    assert "status" in data\n    assert data["status"] in ["healthy", "unhealthy"]\n    \n    # Check components structure\n    assert "components" in data\n    assert "api" in data["components"]\n    assert "database" in data["components"]\n    \n    # Check API component\n    assert "status" in data["components"]["api"]\n    assert data["components"]["api"]["status"] == "healthy"\n    \n    # Check database component has required fields\n    assert "status" in data["components"]["database"]\n    assert "message" in data["components"]["database"]\n\n\ndef test_health_endpoint_api_always_healthy(client):\n    """Test that the API component is always healthy if endpoint responds."""\n    response = client.get("/health")\n    data = response.json()\n    \n    # If we get a response, API component should be healthy\n    assert data["components"]["api"]["status"] == "healthy"\n
+"""
+Tests for health check endpoints.
+"""
+import pytest
+
+
+def test_root_endpoint(client):
+    """Test the root endpoint returns API status."""
+    response = client.get("/")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "ok"
+    assert "message" in data
+    assert "version" in data
+
+
+def test_health_endpoint_returns_200(client):
+    """Test the health endpoint returns 200 status code."""
+    response = client.get("/health")
+    assert response.status_code == 200
+
+
+def test_health_endpoint_structure(client):
+    """Test the health endpoint returns expected structure."""
+    response = client.get("/health")
+    data = response.json()
+    
+    # Check overall status exists
+    assert "status" in data
+    assert data["status"] in ["healthy", "unhealthy"]
+    
+    # Check components structure
+    assert "components" in data
+    assert "api" in data["components"]
+    assert "database" in data["components"]
+    
+    # Check API component
+    assert "status" in data["components"]["api"]
+    assert data["components"]["api"]["status"] == "healthy"
+    
+    # Check database component has required fields
+    assert "status" in data["components"]["database"]
+    assert "message" in data["components"]["database"]
+
+
+def test_health_endpoint_api_always_healthy(client):
+    """Test that the API component is always healthy if endpoint responds."""
+    response = client.get("/health")
+    data = response.json()
+    
+    # If we get a response, API component should be healthy
+    assert data["components"]["api"]["status"] == "healthy"

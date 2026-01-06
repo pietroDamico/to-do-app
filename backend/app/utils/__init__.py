@@ -1,1 +1,7 @@
-"""\nUtility functions and helpers.\nIncludes authentication utilities, validators, and common helpers.\n"""\nfrom app.utils.security import hash_password, verify_password\n\n__all__ = ["hash_password", "verify_password"]\n
+"""
+Utility functions and helpers.
+Includes authentication utilities, validators, and common helpers.
+"""
+from app.utils.security import hash_password, verify_password
+
+__all__ = ["hash_password", "verify_password"]

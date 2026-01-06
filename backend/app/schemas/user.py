@@ -1,1 +1,57 @@
-"""\nPydantic schemas for User API requests and responses.\n"""\nfrom datetime import datetime\nfrom typing import Optional\nfrom pydantic import BaseModel, Field, field_validator\nimport re\n\n\nclass UserCreate(BaseModel):\n    """\n    Schema for user registration input.\n    \n    Attributes:\n        username: 3-50 characters, alphanumeric and underscore only\n        password: Minimum 8 characters\n    """\n    username: str = Field(..., min_length=3, max_length=50)\n    password: str = Field(..., min_length=8)\n\n    @field_validator('username')\n    @classmethod\n    def username_alphanumeric(cls, v: str) -> str:\n        """Validate username contains only alphanumeric characters and underscores."""\n        if not re.match(r'^[a-zA-Z0-9_]+$', v):\n            raise ValueError('Username must contain only letters, numbers, and underscores')\n        return v.lower()  # Store username in lowercase\n\n\nclass UserResponse(BaseModel):\n    """\n    Schema for user API responses.\n    Excludes password hash for security.\n    """\n    id: int\n    username: str\n    created_at: datetime\n\n    model_config = {\n        "from_attributes": True\n    }\n\n\nclass UserInDB(BaseModel):\n    """\n    Schema for internal user representation.\n    Includes password hash for authentication operations.\n    """\n    id: int\n    username: str\n    password_hash: str\n    created_at: datetime\n    updated_at: Optional[datetime] = None\n\n    model_config = {\n        "from_attributes": True\n    }\n
+"""
+Pydantic schemas for User API requests and responses.
+"""
+from datetime import datetime
+from typing import Optional
+from pydantic import BaseModel, Field, field_validator
+import re
+
+
+class UserCreate(BaseModel):
+    """
+    Schema for user registration input.
+    
+    Attributes:
+        username: 3-50 characters, alphanumeric and underscore only
+        password: Minimum 8 characters
+    """
+    username: str = Field(..., min_length=3, max_length=50)
+    password: str = Field(..., min_length=8)
+
+    @field_validator('username')
+    @classmethod
+    def username_alphanumeric(cls, v: str) -> str:
+        """Validate username contains only alphanumeric characters and underscores."""
+        if not re.match(r'^[a-zA-Z0-9_]+$', v):
+            raise ValueError('Username must contain only letters, numbers, and underscores')
+        return v.lower()  # Store username in lowercase
+
+
+class UserResponse(BaseModel):
+    """
+    Schema for user API responses.
+    Excludes password hash for security.
+    """
+    id: int
+    username: str
+    created_at: datetime
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class UserInDB(BaseModel):
+    """
+    Schema for internal user representation.
+    Includes password hash for authentication operations.
+    """
+    id: int
+    username: str
+    password_hash: str
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    model_config = {
+        "from_attributes": True
+    }
