@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import { healthCheck } from './services/api'
 import { Register } from './pages/Register'
 import { Login } from './pages/Login'
+import { TodoList } from './pages/TodoList'
 import { LogoutButton } from './components/auth/LogoutButton'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
 import './App.css'
@@ -48,7 +49,7 @@ function Home() {
       
       {isAuthenticated ? (
         <div className="authenticated-content">
-          <p>You are logged in! Your to-do functionality will appear here.</p>
+          <Link to="/todos" className="todos-link">View My To-Do List →</Link>
         </div>
       ) : (
         <div className="auth-links">
@@ -87,6 +88,14 @@ function AppRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route 
+        path="/todos" 
+        element={
+          <ProtectedRoute>
+            <TodoList />
+          </ProtectedRoute>
+        } 
+      />
       <Route 
         path="/dashboard" 
         element={
