@@ -8,6 +8,7 @@ from sqlalchemy import text
 
 from app.config import settings
 from app.database import SessionLocal
+from app.routers import auth_router
 
 # Configure logging
 logging.basicConfig(
@@ -30,6 +31,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include routers
+app.include_router(auth_router)
 
 
 @app.get("/")
