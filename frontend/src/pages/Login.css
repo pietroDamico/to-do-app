@@ -1,0 +1,49 @@
+/**
+ * Styles for the login page.
+ */
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1rem;
+}
+
+.login-placeholder {
+  max-width: 400px;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-placeholder h2 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.login-placeholder p {
+  color: #666;
+  margin: 0.5rem 0;
+}
+
+.login-placeholder a {
+  color: #4a90d9;
+  text-decoration: none;
+}
+
+.login-placeholder a:hover {
+  text-decoration: underline;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}

@@ -1,1 +1,5 @@
-/**\n * Test setup file for Vitest.\n * Configures testing-library and other test utilities.\n */\nimport '@testing-library/jest-dom'\n
+/**
+ * Test setup file for Vitest.
+ * Configures testing-library and other test utilities.
+ */
+import '@testing-library/jest-dom'

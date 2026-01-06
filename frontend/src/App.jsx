@@ -1,1 +1,55 @@
-import { useState, useEffect } from 'react'\nimport { BrowserRouter, Routes, Route } from 'react-router-dom'\nimport { healthCheck } from './services/api'\nimport './App.css'\n\nfunction App() {\n  const [apiStatus, setApiStatus] = useState('checking...')\n  const [dbStatus, setDbStatus] = useState('checking...')\n\n  useEffect(() => {\n    const checkHealth = async () => {\n      try {\n        const health = await healthCheck()\n        setApiStatus(health.components?.api?.status || health.status || 'unknown')\n        setDbStatus(health.components?.database?.status || 'unknown')\n      } catch (error) {\n        console.error('Health check failed:', error)\n        setApiStatus('error')\n        setDbStatus('error')\n      }\n    }\n    \n    checkHealth()\n  }, [])\n\n  return (\n    <BrowserRouter>\n      <div className=\"App\">\n        <h1>To-Do App</h1>\n        <div className=\"status-container\">\n          <p>API Status: <span className={`status-${apiStatus}`}>{apiStatus}</span></p>\n          <p>Database Status: <span className={`status-${dbStatus}`}>{dbStatus}</span></p>\n        </div>\n        <Routes>\n          <Route path=\"/\" element={<div>Welcome to To-Do App</div>} />\n        </Routes>\n      </div>\n    </BrowserRouter>\n  )\n}\n\nexport default App\n
+import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { healthCheck } from './services/api'
+import { Register } from './pages/Register'
+import { Login } from './pages/Login'
+import './App.css'
+
+function Home() {
+  const [apiStatus, setApiStatus] = useState('checking...')
+  const [dbStatus, setDbStatus] = useState('checking...')
+
+  useEffect(() => {
+    const checkHealth = async () => {
+      try {
+        const health = await healthCheck()
+        setApiStatus(health.components?.api?.status || health.status || 'unknown')
+        setDbStatus(health.components?.database?.status || 'unknown')
+      } catch (error) {
+        console.error('Health check failed:', error)
+        setApiStatus('error')
+        setDbStatus('error')
+      }
+    }
+    
+    checkHealth()
+  }, [])
+
+  return (
+    <div className="App">
+      <h1>To-Do App</h1>
+      <div className="status-container">
+        <p>API Status: <span className={`status-${apiStatus}`}>{apiStatus}</span></p>
+        <p>Database Status: <span className={`status-${dbStatus}`}>{dbStatus}</span></p>
+      </div>
+      <div className="auth-links">
+        <Link to="/register" className="auth-link">Register</Link>
+        <Link to="/login" className="auth-link">Login</Link>
+      </div>
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
+  )
+}
+
+export default App
