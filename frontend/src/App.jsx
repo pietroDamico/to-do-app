@@ -18,8 +18,8 @@ function Home() {
     const checkHealth = async () => {
       try {
         const health = await healthCheck()
-        setApiStatus(health.components?.api?.status || health.status || 'unknown')
-        setDbStatus(health.components?.database?.status || 'unknown')
+        setApiStatus(health.components?.api || health.status || 'unknown')
+        setDbStatus(health.components?.database || 'unknown')
       } catch (error) {
         console.error('Health check failed:', error)
         setApiStatus('error')

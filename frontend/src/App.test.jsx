@@ -1,7 +1,11 @@
+/**
+ * Tests for the main App component.
+ */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import App from './App'
 
+// Mock the API service
 vi.mock('./services/api', () => ({
   healthCheck: vi.fn(),
   default: {
@@ -27,8 +31,8 @@ describe('App', () => {
       healthCheck.mockResolvedValue({
         status: 'healthy',
         components: {
-          api: { status: 'healthy' },
-          database: { status: 'healthy' },
+          api: 'healthy',
+          database: 'healthy',
         },
       })
 
@@ -40,8 +44,8 @@ describe('App', () => {
       healthCheck.mockResolvedValue({
         status: 'healthy',
         components: {
-          api: { status: 'healthy' },
-          database: { status: 'healthy' },
+          api: 'healthy',
+          database: 'healthy',
         },
       })
 
@@ -68,8 +72,8 @@ describe('App', () => {
       healthCheck.mockResolvedValue({
         status: 'healthy',
         components: {
-          api: { status: 'healthy' },
-          database: { status: 'healthy' },
+          api: 'healthy',
+          database: 'healthy',
         },
       })
 
@@ -83,8 +87,8 @@ describe('App', () => {
       healthCheck.mockResolvedValue({
         status: 'healthy',
         components: {
-          api: { status: 'healthy' },
-          database: { status: 'healthy' },
+          api: 'healthy',
+          database: 'healthy',
         },
       })
 
@@ -92,10 +96,28 @@ describe('App', () => {
 
       expect(screen.queryByRole('button', { name: /logout/i })).not.toBeInTheDocument()
     })
+
+    it('displays unhealthy database status correctly', async () => {
+      healthCheck.mockResolvedValue({
+        status: 'degraded',
+        components: {
+          api: 'healthy',
+          database: 'unhealthy',
+        },
+      })
+
+      render(<App />)
+
+      await waitFor(() => {
+        expect(screen.getByText('healthy')).toBeInTheDocument()
+        expect(screen.getByText('unhealthy')).toBeInTheDocument()
+      })
+    })
   })
 
   describe('Authenticated state', () => {
     beforeEach(() => {
+      // Set up authenticated state in localStorage
       localStorage.setItem('token', 'test-token')
       localStorage.setItem('user', JSON.stringify({ id: 1, username: 'testuser' }))
     })
@@ -104,8 +126,8 @@ describe('App', () => {
       healthCheck.mockResolvedValue({
         status: 'healthy',
         components: {
-          api: { status: 'healthy' },
-          database: { status: 'healthy' },
+          api: 'healthy',
+          database: 'healthy',
         },
       })
 
@@ -120,8 +142,8 @@ describe('App', () => {
       healthCheck.mockResolvedValue({
         status: 'healthy',
         components: {
-          api: { status: 'healthy' },
-          database: { status: 'healthy' },
+          api: 'healthy',
+          database: 'healthy',
         },
       })
 
@@ -136,8 +158,8 @@ describe('App', () => {
       healthCheck.mockResolvedValue({
         status: 'healthy',
         components: {
-          api: { status: 'healthy' },
-          database: { status: 'healthy' },
+          api: 'healthy',
+          database: 'healthy',
         },
       })
 
@@ -153,8 +175,8 @@ describe('App', () => {
       healthCheck.mockResolvedValue({
         status: 'healthy',
         components: {
-          api: { status: 'healthy' },
-          database: { status: 'healthy' },
+          api: 'healthy',
+          database: 'healthy',
         },
       })
 
