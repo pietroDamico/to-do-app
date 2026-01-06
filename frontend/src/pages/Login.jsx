@@ -1,8 +1,9 @@
 /**
- * Login page component (placeholder).
- * Will be fully implemented in Issue #9.
+ * Login page component.
+ * Renders the login form centered on the page.
  */
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { LoginForm } from '../components/auth/LoginForm';
 import './Login.css';
 
 export function Login() {
@@ -11,17 +12,13 @@ export function Login() {
 
   return (
     <div className="login-page">
-      <div className="login-placeholder">
-        <h2>Login</h2>
+      <div className="login-container">
         {message && (
           <div className="success-message" role="status">
             {message}
           </div>
         )}
-        <p>Login functionality will be implemented in Issue #9.</p>
-        <p>
-          <Link to="/register">Back to Register</Link>
-        </p>
+        <LoginForm />
       </div>
     </div>
   );
