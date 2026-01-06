@@ -1,7 +1,8 @@
 """
 SQLAlchemy database models.
-All models inherit from Base defined in database.py.
+Models define the structure of database tables.
 """
 from app.models.user import User
+from app.models.todo_item import TodoItem
 
-__all__ = ["User"]
+__all__ = ["User", "TodoItem"]
